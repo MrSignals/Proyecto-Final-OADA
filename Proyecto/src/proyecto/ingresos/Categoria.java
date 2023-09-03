@@ -12,7 +12,6 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import proyecto.MenuIngreso;
 import proyecto.dbConexion;
-import java.lang.String;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 
@@ -403,99 +402,121 @@ public class Categoria extends javax.swing.JFrame {
     }//GEN-LAST:event_panelBtnVolverMouseClicked
 
     void consulta() {
-        String sql = "Select * from categoria";
+        String sql = "Select * from categoria"; /*1  ta*/
         try {
-            conect = db.getConnection();
-            st = conect.createStatement();
-            rs = st.executeQuery(sql);
-            Object[] categoria = new Object[3];
-            modelo = (DefaultTableModel) tablaCategoria.getModel();
-            while (rs.next()) {
-                categoria[0] = rs.getInt("Codigo");
-                categoria[1] = rs.getInt("Impuesto_Servicio");
-                categoria[2] = rs.getString("Descripcion");
+            conect = db.getConnection(); /*2  ta*/
+            st = conect.createStatement(); /*3  ta*/
+            rs = st.executeQuery(sql); /*4  ta*/
+            Object[] categoria = new Object[3]; /*5  ta*/
+            modelo = (DefaultTableModel) tablaCategoria.getModel(); /*6  ta*/
+            while (rs.next()) { /*7  n*(tc) + tc */
+                categoria[0] = rs.getInt("Codigo"); /*8  n*ta*/
+                categoria[1] = rs.getInt("Impuesto_Servicio"); /*9  n*ta*/
+                categoria[2] = rs.getString("Descripcion"); /*10  n*ta*/
 
-                modelo.addRow(categoria);
+                modelo.addRow(categoria); /*11 n*ta*/
             }
-            tablaCategoria.setModel(modelo);
+            tablaCategoria.setModel(modelo); /*12  ta*/
         } catch (Exception e) {
 
         }
     }
+    
+    /*COSTO DE ALGORITMO DEL METODO CONSULTA
+        Tm = 7ta + ntc + tc
+        Tp = 7ta + n*(tc + 4ta) + tc
+        Tu = (Tm + Tp) / 2
+        Tu = (14ta + n*(2tc + 4ta) + 2tc) / 2
+     */
 
     void Agregar() {
-        String impuesto = txtImpuesto.getText();
-        String descrip = txtDescripcion.getText();
+        String impuesto = txtImpuesto.getText(); /*1  ta*/
+        String descrip = txtDescripcion.getText(); /*2  ta*/
         try {
-            if (impuesto.equals(" ") || descrip.equals(" ")) {
+            if (impuesto.equals(" ") || descrip.equals(" ")) { /*3  tc*/
                 JOptionPane.showMessageDialog(null, "No se han rellenado todos los campos");
-                limpiarTabla();
+                limpiarTabla(); /*4 n*(ta + tc + 3to) + tc*/
             } else {
-
-                String sql = "insert into categoria(Impuesto_Servicio,Descripcion) values ('" + impuesto + "','" + descrip + "')";
-                conect = db.getConnection();
-                st = conect.createStatement();
-                st.executeUpdate(sql);
+                String sql = "insert into categoria(Impuesto_Servicio,Descripcion) values ('" + impuesto + "','" + descrip + "')"; /*5  ta*/
+                conect = db.getConnection(); /*6  ta*/
+                st = conect.createStatement(); /*7 ta*/
+                st.executeUpdate(sql); /*8  ta*/
 
                 JOptionPane.showMessageDialog(null, "Categoria ingresada con exito");
-                limpiarTabla();
+                limpiarTabla(); /*9 n*(ta + tc + 3to) + tc*/
             }
         } catch (Exception e) {
             System.out.println("Error" + e);
         }
     }
-
+    
+    /* COSTO DE ALGORITMO DEL METODO AGREGAR
+        Tm = 2ta + n*(ta + tc + 3to) + 2tc
+        Tp = 6ta + n*(ta + tc + 3to) + 2tc
+        Tu = (Tm + Tp) / 2
+        Tu = (8ta + n*(2ta + 2tc + 6to) + 4tc) / 2
+    */
+    
     void limpiarTabla() {
-        for (int i = 0; i <= tablaCategoria.getRowCount(); i++) {
-            modelo.removeRow(i);
-            i = (i - 1);
+        for (int i = 0; i <= tablaCategoria.getRowCount(); i++) { /*1  n*(ta + tc + to) + tc*/
+            modelo.removeRow(i); /*2  nto*/
+            i = (i - 1); /*3  nto*/
         }
     }
-
+    /* COSTO DE ALGORITMO DEL METODO limpiarTabla
+        T = n*(ta + tc + 3to) + tc
+    */
+    
     void Modificar() {
-        String codigo = txtICodigo.getText();
-        String impuesto = txtImpuesto.getText();
-        String descrip = txtDescripcion.getText();
+        String codigo = txtICodigo.getText(); /*1  ta*/
+        String impuesto = txtImpuesto.getText(); /*2  ta*/
+        String descrip = txtDescripcion.getText(); /*3  ta*/
         try {
-            if (codigo.equals(" ") || impuesto.equals(" ") || descrip.equals(" ")) {
+            if (codigo.equals(" ") || impuesto.equals(" ") || descrip.equals(" ")) { /*4  tc*/
                 JOptionPane.showMessageDialog(null, "No se han rellenado todos los campos");
-                limpiarTabla();
+                limpiarTabla(); /*5 n*(ta + tc + 3to) + tc */
             } else {
-
-                String sql = "Update categoria set Impuesto_Servicio  ='" + impuesto + "', Descripcion ='" + descrip + "' WHERE codigo=" + codigo;
-                conect = db.getConnection();
-                st = conect.createStatement();
-                st.executeUpdate(sql);
+                String sql = "Update categoria set Impuesto_Servicio  ='" + impuesto + "', Descripcion ='" + descrip + "' WHERE codigo=" + codigo; /*6  ta*/
+                conect = db.getConnection(); /*7  ta*/
+                st = conect.createStatement(); /*8  ta*/
+                st.executeUpdate(sql); /*9  ta*/
                 JOptionPane.showMessageDialog(null, "Categoria modificada con exito");
-                limpiarTabla();
+                limpiarTabla(); /*10 n*(ta + tc + 3to) + tc */
             }
         } catch (Exception e) {
-//            JOptionPane.showMessageDialog(null, "No se puede modificar un dato ya relacionado a otra tabla");
+            JOptionPane.showMessageDialog(null, "No se puede modificar un dato ya relacionado a otra tabla");
         }
     }
+        
+     /* COSTO DE ALGORITMO DEL METODO MODIFICAR
+        Tm = 3ta + n*(ta + tc + 3to) + 2tc
+        Tp = 7ta + n*(ta + tc + 3to) + 2tc
+        Tu = (Tm + Tp) / 2
+        Tu = (10ta + n*(2ta + 2tc + 6to) + 4tc) / 2
+    */
 
     void Eliminar() {
-        String codigo = txtICodigo.getText();
-        int fila = tablaCategoria.getSelectedRow();
+        String codigo = txtICodigo.getText();  /*1  ta*/
+        int fila = tablaCategoria.getSelectedRow();  /*2  ta*/
         try {
-            if (fila < 0) {
+            if (fila < 0) {  /*3  tc*/
                 JOptionPane.showMessageDialog(null, "Categoria no seleccionada");
-                limpiarTabla();
+                limpiarTabla(); /*4 n*(ta + tc + 3to) + tc*/
             } else {
-                CallableStatement csmt = conect.prepareCall("{CALL  reset_autoincrement_Categoria()}");
-                int n = JOptionPane.showConfirmDialog(null, "Desea eliminar la categoria", "Categoria", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if (n == JOptionPane.YES_NO_OPTION) {
-                    if (validar()) {
+                CallableStatement csmt = conect.prepareCall("{CALL  reset_autoincrement_Categoria()}"); /*5 ta */
+                int n = JOptionPane.showConfirmDialog(null, "Desea eliminar la categoria", "Categoria", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE); /*6  ta*/
+                if (n == JOptionPane.YES_NO_OPTION) { /*7 tc*/
+                    if (validar()) {  /*8 tc*/
                         JOptionPane.showMessageDialog(null, "No puede eliminar este dato ya que esta referenciado en otra tabla");
-                        limpiarTabla();
+                        limpiarTabla(); /*9  n*(ta + tc + 3to) + tc*/
                     } else {
-                        String sql = "Delete from categoria where codigo= " + codigo;
-                        conect = db.getConnection();
-                        st = conect.createStatement();
-                        st.executeUpdate(sql);
-                        csmt.execute();
+                        String sql = "Delete from categoria where codigo= " + codigo; /*10 ta*/
+                        conect = db.getConnection(); /*11 ta*/
+                        st = conect.createStatement(); /*12 ta*/
+                        st.executeUpdate(sql); /*13 ta*/
+                        csmt.execute(); /*14 to*/
                         JOptionPane.showMessageDialog(null, "Categoria eliminada");
-                        limpiarTabla();
+                        limpiarTabla(); /*15  n*(ta + tc + 3to) + tc*/
                     }
 
                 }
@@ -504,7 +525,15 @@ public class Categoria extends javax.swing.JFrame {
 
         }
     }
-
+    
+    /* COSTO DE ALGORITMO DEL METODO ELIMINAR
+        Tm = 2ta + n*(ta + 3to + tc) + 2tc
+        Tp'1 = 4ta + n*(ta + tc + 3to) + 3tc
+        Tp'2 = 8ta + n*(ta + tc + 3to) + tc + to
+        Tu'1 = (Tm + Tp'1) / 2
+        Tu'1 = (6ta + n*(2ta + 6to + 2tc) + 5tc) / 2
+        Tu'2 = (10ta + n*(2ta + 6to + 2tc) + 3tc + to) / 2
+    */
     void Nuevo() {
         txtICodigo.setText(" ");
         txtImpuesto.setText(" ");
@@ -512,23 +541,23 @@ public class Categoria extends javax.swing.JFrame {
     }
 
     boolean validar() {
-        boolean result = false;
+        boolean result = false; /*1  ta*/
         try {
-            String sql = "Select * from Hotel WHERE Codigo= " + txtICodigo.getText();
-            conect = db.getConnection();
-            st = conect.createStatement();
-            rs = st.executeQuery(sql);
+            String sql = "Select * from Hotel WHERE Codigo= " + txtICodigo.getText(); /*2 ta*/
+            conect = db.getConnection();  /*3 ta*/
+            st = conect.createStatement();  /*4 ta*/
+            rs = st.executeQuery(sql);  /*5 ta*/
 
-            if (rs.next()) {
-                result = true;
-            } else {
-                result = false;
-            }
+            result = rs.next();  /*6 ta*/
         } catch (SQLException E) {
 
         }
         return result;
     }
+    
+     /* COSTO DE ALGORITMO DEL METODO VALIDAR
+        T = 6ta
+    */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnAgregar;
     private javax.swing.JLabel btnNuevo;

@@ -11,11 +11,6 @@ import java.sql.Statement;
 import javax.swing.table.DefaultTableModel;
 import proyecto.dbConexion;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -23,7 +18,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class HotelCategoria extends javax.swing.JFrame {
 
-     dbConexion db = new dbConexion();
+    dbConexion db = new dbConexion();
     Connection conect;
     DefaultTableModel modelo;
     Statement st;
@@ -128,7 +123,7 @@ public class HotelCategoria extends javax.swing.JFrame {
     }//GEN-LAST:event_tablaHotelTemporadaMouseClicked
 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
-        // TODO add your handling code here:
+        /* TODO add your handling code here: */
         MenuConsultas menCons = new MenuConsultas();
         this.dispose();
         menCons.setVisible(true);
@@ -136,32 +131,37 @@ public class HotelCategoria extends javax.swing.JFrame {
 
      void consulta() {
 
-        String sql = "Select hotel.Nombre,temporada.descripcion,categoria.descripcion, hotel.AnioConstruccion\n" +
+        String sql = "Select hotel.Nombre,temporada.descripcion,categoria.descripcion, hotel.AnioConstruccion\n" + /*1 ta*/
 "			from hotel \n" +
 "			Inner join categoria ON hotel.Codigo = categoria.Codigo\n" +
 "            Inner join hotelTemporada ON hotel.IdHotel = hotelTemporada.IdHotel\n" +
 "            Inner join temporada ON hotelTemporada.IdTemporada = temporada.IdTemporada";
         try {
-            conect = db.getConnection();
-            st = conect.createStatement();
-            rs = st.executeQuery(sql);
-            Object[] hotelTemp = new Object[4];
-            modelo = (DefaultTableModel) tablaHotelTemporada.getModel();
-            while (rs.next()) {
-                hotelTemp[0] = rs.getString("hotel.Nombre");
-                hotelTemp[1] = rs.getString("temporada.Descripcion");
-                hotelTemp[2] = rs.getString("categoria.descripcion");
-                hotelTemp[3] = rs.getInt("hotel.AnioConstruccion");
+            conect = db.getConnection(); /*2  ta*/
+            st = conect.createStatement(); /*3  ta*/
+            rs = st.executeQuery(sql); /*4  ta*/
+            Object[] hotelTemp = new Object[4]; /*5 ta*/
+            modelo = (DefaultTableModel) tablaHotelTemporada.getModel(); /*6  ta*/
+            while (rs.next()) { /*7  n*(tc) + tc */
+                hotelTemp[0] = rs.getString("hotel.Nombre"); /*8 n*(ta)*/
+                hotelTemp[1] = rs.getString("temporada.Descripcion");  /*9 n*(ta)*/
+                hotelTemp[2] = rs.getString("categoria.descripcion");  /*10 n*(ta)*/
+                hotelTemp[3] = rs.getInt("hotel.AnioConstruccion");  /*11 n*(ta)*/
 
-                modelo.addRow(hotelTemp);
+                modelo.addRow(hotelTemp);  /*12 n*(ta)*/
             }
-            tablaHotelTemporada.setModel(modelo);
+            tablaHotelTemporada.setModel(modelo);  /*13 ta*/
         } catch (Exception e) {
             System.out.println(e);
         }
     }
    
-     
+     /*COSTO DE ALGORITMO DEL METODO CONSULTA
+        Tm = 7ta + ntc + tc
+        Tp = 7ta + n*(tc + 5ta) + tc
+        Tu = (Tm + Tp) / 2
+        Tu = (14ta + n*(2tc + 5ta) + 2tc) / 2
+     */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

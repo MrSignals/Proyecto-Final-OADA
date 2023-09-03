@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import proyecto.MenuIngreso;
@@ -366,12 +365,7 @@ public class Ciudad extends javax.swing.JFrame {
     }//GEN-LAST:event_cboPaisActionPerformed
 
     private void cboPaisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cboPaisMouseClicked
-        // TODO add your handling code here:
-//        if (evt.getClickCount() == 2 && !evt.isConsumed()) {
-//                    evt.consume();
-//                    Pais pa = new Pais();
-//                    pa.setVisible(true);
-//            }
+
     }//GEN-LAST:event_cboPaisMouseClicked
 
     private void btnAgregarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAgregarMouseClicked
