@@ -438,103 +438,128 @@ public class HotelTemporada extends javax.swing.JFrame {
     }//GEN-LAST:event_panelBtnVolverMouseClicked
 
     void consulta() {
-        String sql = "Select hotel.Nombre, temporada.Descripcion, hotelTemporada.F_I_Temporada, hotelTemporada.F_F_Temporada\n"
+        String sql = "Select hotel.Nombre, temporada.Descripcion, hotelTemporada.F_I_Temporada, hotelTemporada.F_F_Temporada\n" /*1 ta*/
                 + "     From hotelTemporada\n"
                 + "     Inner Join hotel ON hotelTemporada.IdHotel = hotel.IdHotel\n"
                 + "     Inner Join temporada ON hotelTemporada.IdTemporada = temporada.IdTemporada;";
         try {
-            conect = db.getConnection();
-            st = conect.createStatement();
-            rs = st.executeQuery(sql);
-            Object[] hotelTemp = new Object[4];
-            modelo = (DefaultTableModel) tablaHotelTemporada.getModel();
-            while (rs.next()) {
-                hotelTemp[0] = rs.getString("hotel.Nombre");
-                hotelTemp[1] = rs.getString("temporada.Descripcion");
-                hotelTemp[2] = rs.getDate("hotelTemporada.F_I_Temporada");
-                hotelTemp[3] = rs.getDate("hotelTemporada.F_F_Temporada");
+            conect = db.getConnection(); /*2  ta*/
+            st = conect.createStatement();  /*3  ta*/
+            rs = st.executeQuery(sql);  /*4  ta*/
+            Object[] hotelTemp = new Object[4];  /*5  ta*/
+            modelo = (DefaultTableModel) tablaHotelTemporada.getModel();  /*6  ta*/
+            while (rs.next()) {  /*7  n*(tc) + tc */
+                hotelTemp[0] = rs.getString("hotel.Nombre"); /*8 n*(ta)*/
+                hotelTemp[1] = rs.getString("temporada.Descripcion"); /*9  n*(ta)*/
+                hotelTemp[2] = rs.getDate("hotelTemporada.F_I_Temporada"); /*10  n*(ta)*/
+                hotelTemp[3] = rs.getDate("hotelTemporada.F_F_Temporada"); /*11  n*(ta)*/
 
-                modelo.addRow(hotelTemp);
+                modelo.addRow(hotelTemp); /*12  n*(ta)*/
             }
-            tablaHotelTemporada.setModel(modelo);
+            tablaHotelTemporada.setModel(modelo); /*13 ta*/
         } catch (Exception e) {
 
         }
     }
+    
+    /*COSTO DE ALGORITMO DEL METODO CONSULTA
+        Tm = 7ta + ntc + tc
+        Tp = 7ta + n*(tc + 5ta) + tc
+        Tu = (Tm + Tp) / 2
+        Tu = (14ta + n*(2tc + 5ta) + 2tc) / 2
+     */
 
     void Agregar() {
-        int idHotel = cboHotel.getSelectedIndex();
-        int idTemporada = cboTemporada.getSelectedIndex();
-        String fechaI = txtFI.getText();
-        String fechaF = txtFF.getText();
+        int idHotel = cboHotel.getSelectedIndex(); /*1  ta*/
+        int idTemporada = cboTemporada.getSelectedIndex(); /*2  ta*/
+        String fechaI = txtFI.getText(); /*3  ta*/
+        String fechaF = txtFF.getText(); /*4  ta*/
         try {
-            if (fechaF.equals(" ") || fechaI.equals(" ")) {
+            if (fechaF.equals(" ") || fechaI.equals(" ")) { /*5  tc*/
                 JOptionPane.showMessageDialog(null, "No se han rellenado todos los campos");
-                limpiarTabla();
+                limpiarTabla(); /*6 n*(ta + tc + 3to) + tc*/
             } else {
-                DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                LocalDate fechaISQL = LocalDate.parse(fechaI, formatoFecha);
-                LocalDate fechaFSQL = LocalDate.parse(fechaF, formatoFecha);
-                String sql = "insert into hoteltemporada(IdHotel,IdTemporada,F_I_Temporada,F_F_Temporada) values ('" + idHotel + "','" + idTemporada + "','" + fechaISQL + "','" + fechaFSQL + "' )";
-                conect = db.getConnection();
-                st = conect.createStatement();
-                st.executeUpdate(sql);
+                DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy"); /*7  ta*/
+                LocalDate fechaISQL = LocalDate.parse(fechaI, formatoFecha); /*8  ta*/
+                LocalDate fechaFSQL = LocalDate.parse(fechaF, formatoFecha); /*9  ta*/
+                String sql = "insert into hoteltemporada(IdHotel,IdTemporada,F_I_Temporada,F_F_Temporada) values ('" + idHotel + "','" + idTemporada + "','" + fechaISQL + "','" + fechaFSQL + "' )"; /*10  ta*/
+                conect = db.getConnection(); /*11  ta*/
+                st = conect.createStatement(); /*12  ta*/
+                st.executeUpdate(sql); /*13  ta*/
 
                 JOptionPane.showMessageDialog(null, "Temporada del Hotel ingresada ingresada con exito");
-                limpiarTabla();
-
+                limpiarTabla(); /*14 n*(ta + tc + 3to) + tc*/
             }
         } catch (Exception e) {
             System.out.println(e);
         }
     }
+    
+    /* COSTO DE ALGORITMO DEL METODO AGREGAR
+        Tm = 4ta + n*(ta + tc + 3to) + 2tc
+        Tp = 11ta + n*(ta + tc + 3to) + 2tc
+        Tu = (Tm + Tp) / 2
+        Tu = (15ta + n*(2ta + 2tc + 6to) + 4tc) / 2
+    */
 
     void limpiarTabla() {
-        for (int i = 0; i <= tablaHotelTemporada.getRowCount(); i++) {
-            modelo.removeRow(i);
-            i = (i - 1);
+        for (int i = 0; i <= tablaHotelTemporada.getRowCount(); i++) { /*1  n*(ta + tc + to) + tc*/
+            modelo.removeRow(i); /*2  nto*/
+            i = (i - 1); /*3  nto*/
         }
     }
+    
+     /* COSTO DE ALGORITMO DEL METODO limpiarTabla
+        T = n*(ta + tc + 3to) + tc
+    */
+    
 
     void Modificar() {
-        int idHotel = cboHotel.getSelectedIndex();
-        int idTemporada = cboTemporada.getSelectedIndex();
-        String fechaInicio = txtFI.getText();
-        String fechaFin = txtFF.getText();
+        int idHotel = cboHotel.getSelectedIndex(); /*1  ta*/
+        int idTemporada = cboTemporada.getSelectedIndex(); /*2  ta*/
+        String fechaInicio = txtFI.getText(); /*3  ta*/
+        String fechaFin = txtFF.getText(); /*4  ta*/
         try {
-            if (fechaInicio.equals(" ") || fechaFin.equals(" ")) {
+            if (fechaInicio.equals(" ") || fechaFin.equals(" ")) { /*5  tc*/
                 JOptionPane.showMessageDialog(null, "No se han rellenado todos los campos");
-                limpiarTabla();
+                limpiarTabla(); /*6 n*(ta + tc + 3to) + tc */
             } else {
 
-                String sql = "Update hoteltemporada set IdHotel='" + idHotel + "',IdTemporada  ='" + idTemporada + "' WHERE IdHotel=" + idHotel;
-                conect = db.getConnection();
-                st = conect.createStatement();
-                st.executeUpdate(sql);
+                String sql = "Update hoteltemporada set IdHotel='" + idHotel + "',IdTemporada  ='" + idTemporada + "' WHERE IdHotel=" + idHotel; /*7  ta*/
+                conect = db.getConnection(); /*8  ta*/
+                st = conect.createStatement(); /*9  ta*/
+                st.executeUpdate(sql); /*10  ta*/
                 JOptionPane.showMessageDialog(null, "Temporada del Hotel modificada con exito");
-                limpiarTabla();
+                limpiarTabla(); /*11 n*(ta + tc + 3to) + tc */
             }
 
         } catch (Exception e) {
         }
     }
-
+    
+     /* COSTO DE ALGORITMO DEL METODO MODIFICAR
+        Tm = 4ta + n*(ta + tc + 3to) + 2tc
+        Tp = 8ta + n*(ta + tc + 3to) + 2tc
+        Tu = (Tm + Tp) / 2
+        Tu = (12ta + n*(2ta + 2tc + 6to) + 4tc) / 2
+    */
+    
     void Eliminar() {
-        int idHotel = cboHotel.getSelectedIndex();
-        int fila = tablaHotelTemporada.getSelectedRow();
+        int idHotel = cboHotel.getSelectedIndex(); /*1  ta*/
+        int fila = tablaHotelTemporada.getSelectedRow(); /*2  ta*/
         try {
-            if (fila < 0) {
+            if (fila < 0) { /*3  tc*/
                 JOptionPane.showMessageDialog(null, "Hotel no seleccionado");
-                limpiarTabla();
+                limpiarTabla(); /*4 n*(ta + tc + 3to) + tc*/
             } else {
-                int n = JOptionPane.showConfirmDialog(null, "Desea Eliminar el Hotel", "Hotel", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if (n == JOptionPane.YES_NO_OPTION) {
-                    String sql = "Delete from hoteltemporada where IdHotel= " + idHotel;
-                    conect = db.getConnection();
-                    st = conect.createStatement();
-                    st.executeUpdate(sql);
+                int n = JOptionPane.showConfirmDialog(null, "Desea Eliminar el Hotel", "Hotel", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);  /*5 ta */
+                if (n == JOptionPane.YES_NO_OPTION) { /*6 tc*/
+                    String sql = "Delete from hoteltemporada where IdHotel= " + idHotel; /*8 ta*/
+                    conect = db.getConnection(); /*9 ta*/
+                    st = conect.createStatement(); /*10 ta*/
+                    st.executeUpdate(sql); /*11 ta*/
                     JOptionPane.showMessageDialog(null, "Temporada del Hotel eliminado");
-                    limpiarTabla();
+                    limpiarTabla(); /*12 n*(ta + tc + 3to) + tc*/
                 }
             }
         } catch (Exception e) {
@@ -542,6 +567,13 @@ public class HotelTemporada extends javax.swing.JFrame {
         }
     }
 
+    /* COSTO DE ALGORITMO DEL METODO ELIMINAR
+        Tm = 2ta + n*(ta + 3to + tc) + 2tc
+        Tp = 7ta + n*(ta + tc + 3to) + 3tc
+        Tu = (Tm + Tp'1) / 2
+        Tu = (9ta + n*(2ta + 6to + 2tc) + 5tc) / 2
+    */
+    
     void Nuevo() {
         cboHotel.setSelectedIndex(0);
         cboTemporada.setSelectedIndex(0);
@@ -550,30 +582,43 @@ public class HotelTemporada extends javax.swing.JFrame {
     }
 
     void mostrarHotel() {
-        String sql = "Select * from Hotel";
+        String sql = "Select * from Hotel"; /*1  ta*/
         try {
-            conect = db.getConnection();
-            st = conect.createStatement();
-            rs = st.executeQuery(sql);
-            while (rs.next()) {
-                cboHotel.addItem(rs.getString("Nombre"));
+            conect = db.getConnection(); /*2 ta*/
+            st = conect.createStatement(); /*3 ta*/
+            rs = st.executeQuery(sql); /*4 ta*/
+            while (rs.next()) { /*5 n*(tc) + tc */
+                cboHotel.addItem(rs.getString("Nombre")); /*6 n*(ta) */
             }
         } catch (SQLException e) {
         }
     }
-
+    
+     /* COSTO DE ALGORITMO DEL METODO mostrarHotel
+        Tm = 4ta + n*(tc) + tc
+        Tp = 4ta + n*(tc + ta) + tc
+        Tu = (8ta + n*(2tc + 2ta) + 2tc) / 2
+    */
+    
     void mostrarTemporada() {
-        String sql = "Select * from Temporada";
+        String sql = "Select * from Temporada"; /*1  ta*/
         try {
-            conect = db.getConnection();
-            st = conect.createStatement();
-            rs = st.executeQuery(sql);
-            while (rs.next()) {
-                cboTemporada.addItem(rs.getString("Descripcion"));
+            conect = db.getConnection(); /*2  ta*/
+            st = conect.createStatement(); /*3  ta*/
+            rs = st.executeQuery(sql); /*4 ta*/
+            while (rs.next()) {  /*5 n*(tc) + tc */
+                cboTemporada.addItem(rs.getString("Descripcion")); /*6 n*(ta) */
             }
         } catch (SQLException e) {
         }
     }
+    
+    /* COSTO DE ALGORITMO DEL METODO mostrarTemporada
+        Tm = 4ta + n*(tc) + tc
+        Tp = 4ta + n*(tc + ta) + tc
+        Tu = (8ta + n*(2tc + 2ta) + 2tc) / 2
+    */
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnAgregar;
     private javax.swing.JLabel btnNuevo;

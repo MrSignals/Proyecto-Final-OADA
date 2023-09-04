@@ -463,6 +463,7 @@ public class Categoria extends javax.swing.JFrame {
             i = (i - 1); /*3  nto*/
         }
     }
+    
     /* COSTO DE ALGORITMO DEL METODO limpiarTabla
         T = n*(ta + tc + 3to) + tc
     */
