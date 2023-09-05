@@ -371,97 +371,119 @@ public class Pais extends javax.swing.JFrame {
     }//GEN-LAST:event_panelBtnVolverMouseClicked
 
     void consulta() {
-        String sql = "Select * from pais";
+        String sql = "Select * from pais"; /*1 ta*/
         try {
-            conect = db.getConnection();
-            st = conect.createStatement();
-            rs = st.executeQuery(sql);
-            Object[] pais = new Object[2];
-            modelo = (DefaultTableModel) tablaPais.getModel();
-            while (rs.next()) {
-                pais[0] = rs.getInt("IdPais");
-                pais[1] = rs.getString("Pais");
+            conect = db.getConnection(); /*2 ta*/
+            st = conect.createStatement(); /*3 ta*/
+            rs = st.executeQuery(sql); /*4 ta*/
+            Object[] pais = new Object[2]; /*5 ta*/
+            modelo = (DefaultTableModel) tablaPais.getModel(); /*6 ta*/
+            while (rs.next()) { /*7 ntc + tc */
+                pais[0] = rs.getInt("IdPais"); /*8 nta*/
+                pais[1] = rs.getString("Pais"); /*9 nta*/
 
-                modelo.addRow(pais);
+                modelo.addRow(pais); /*10 nta*/
             }
-            tablaPais.setModel(modelo);
+            tablaPais.setModel(modelo); /*11 ta*/
         } catch (Exception e) {
-
         }
     }
-
+    
+    /* COSTO DE ALGORITMO DEL METODO CONSULTA
+        Tm = 7ta + n*(tc) + tc
+        Tp = 7ta + n*(tc + 3ta) + tc
+        Tu = (Tm + Tp) / 2
+        Tu = (14ta + n(2tc + 3ta) + 2) /2
+    */
+    
     void Agregar() {
-        String pais = txtPais.getText();
+        String pais = txtPais.getText(); /*1  ta*/
         try {
-            if (pais.equals(" ")) {
+            if (pais.equals(" ")) { /*2  tc*/
                 JOptionPane.showMessageDialog(null, "No se han rellenado todos los campos");
-                limpiarTabla();
+                limpiarTabla(); /*3 n(ta + tc + 3to) + tc*/
             } else {
-                String sql = "insert into pais( Pais) values('" + pais + "')";
-                conect = db.getConnection();
-                st = conect.createStatement();
-                st.executeUpdate(sql);
+                String sql = "insert into pais( Pais) values('" + pais + "')"; /*4  ta*/
+                conect = db.getConnection(); /*5  ta*/
+                st = conect.createStatement(); /*6 ta*/
+                st.executeUpdate(sql); /*7 ta*/
                 JOptionPane.showMessageDialog(null, "Pais ingresado con exito");
-                limpiarTabla();
+                limpiarTabla(); /*8 n(ta + tc + 3to) + tc*/
             }
         } catch (Exception e) {
             System.out.println(e);
         }
     }
+    
+      /* COSTO DE ALGORITMO DEL METODO AGREGAR
+        Tm = ta + n*(ta + tc + 3to) + 2tc
+        Tp = 5ta + n*(ta + tc + 3to) + 2tc
+        Tu = (Tm + Tp) / 2
+        Tu = (6ta + n*(2ta + 2tc + 6to) + 4tc) / 2
+    */
 
     void limpiarTabla() {
-        for (int i = 0; i <= tablaPais.getRowCount(); i++) {
-            modelo.removeRow(i);
-            i = (i - 1);
+        for (int i = 0; i <= tablaPais.getRowCount(); i++) { /*1  n(ta + tc + to) + tc*/
+            modelo.removeRow(i); /*2  nto*/
+            i = (i - 1); /*3  nto*/
         }
     }
-
+    
+     /* COSTO DE ALGORITMO DEL METODO limpiarTabla
+        T = n*(ta + tc + 3to) + tc
+    */
+    
     void Modificar() {
-        String idPais = txtIdPais.getText();
-        String pais = txtPais.getText();
+        String idPais = txtIdPais.getText(); /*1  ta*/
+        String pais = txtPais.getText();  /*2  ta*/
         try {
-            if (idPais.equals(" ") || pais.equals(" ")) {
+            if (idPais.equals(" ") || pais.equals(" ")) { /*3  tc*/
                 JOptionPane.showMessageDialog(null, "No se han rellenado todos los campos");
-                limpiarTabla();
+                limpiarTabla(); /*4 n(ta + tc + 3to) + tc */
             } else {
 
-                String sql = "Update pais set IdPais='" + idPais + "',Pais  ='" + pais + "' WHERE IdPais=" + idPais;
-                conect = db.getConnection();
-                st = conect.createStatement();
-                st.executeUpdate(sql);
+                String sql = "Update pais set IdPais='" + idPais + "',Pais  ='" + pais + "' WHERE IdPais=" + idPais;  /*5  ta*/
+                conect = db.getConnection(); /*6  ta*/
+                st = conect.createStatement(); /*7  ta*/
+                st.executeUpdate(sql); /*8  ta*/
                 JOptionPane.showMessageDialog(null, "Ciudad modificada con exito");
-                limpiarTabla();
+                limpiarTabla(); /*9 n(ta + tc + 3to) + tc */
             }
         } catch (Exception e) {
             System.out.println(e);
         }
     }
-
+    
+     /* COSTO DE ALGORITMO DEL METODO MODIFICAR
+        Tm = ta + n*(ta + tc + 3to) + 2tc
+        Tp = 5ta + n*(ta + tc + 3to) + 2tc
+        Tu = (Tm + Tp) / 2
+        Tu = (6ta + n*(2ta + 2tc + 6to) + 4tc) / 2
+    */
+    
     void Eliminar() {
-        String idPais = txtIdPais.getText();
-        int fila = tablaPais.getSelectedRow();
+        String idPais = txtIdPais.getText(); /*1  ta*/
+        int fila = tablaPais.getSelectedRow(); /*2  ta*/
         try {
-            if (fila < 0) {
+            if (fila < 0) { /*3  tc*/
                 JOptionPane.showMessageDialog(null, "Pais no seleccionadao");
-                limpiarTabla();
+                limpiarTabla(); /*4 n(ta + tc + 3to) + tc*/
             } else {
-                CallableStatement csmt = conect.prepareCall("{CALL  reset_autoincrement_Pais()}");
-                int n = JOptionPane.showConfirmDialog(null, "Desea eliminar el Pais", "Pais", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if (n == JOptionPane.YES_NO_OPTION) {
-                    if (validar()) {
+                CallableStatement csmt = conect.prepareCall("{CALL  reset_autoincrement_Pais()}"); /*5 ta */
+                int n = JOptionPane.showConfirmDialog(null, "Desea eliminar el Pais", "Pais", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE); /*6  ta*/
+                if (n == JOptionPane.YES_NO_OPTION) { /*7 tc*/
+                    if (validar()) { /*8 tc*/
                         JOptionPane.showMessageDialog(null, "No puede eliminar este dato ya que esta referenciado en otra tabla");
-                        limpiarTabla();
+                        limpiarTabla(); /*9  n(ta + tc + 3to) + tc*/
                     } else {
-                        String sql = "Delete from pais where IdPais= " + idPais;
+                        String sql = "Delete from pais where IdPais= " + idPais; /*10 ta*/
 
-                        conect = db.getConnection();
-                        st = conect.createStatement();
-                        st.executeUpdate(sql);
+                        conect = db.getConnection(); /*11 ta*/
+                        st = conect.createStatement(); /*12 ta*/
+                        st.executeUpdate(sql);  /*13 ta*/
                         JOptionPane.showMessageDialog(null, "Pais eliminado");
-                        csmt.execute();
-
-                        System.out.println("Valor reiniciado");
-                        limpiarTabla();
+                        csmt.execute(); /*14 to*/
+                        limpiarTabla(); /*15  n(ta + tc + 3to) + tc*/
                     }
 
                 }
@@ -470,30 +492,39 @@ public class Pais extends javax.swing.JFrame {
             System.out.println(e);
         }
     }
+    
+    /* COSTO DE ALGORITMO DEL METODO ELIMINAR
+        Tm = 2ta + n*(ta + 3to + tc) + 2tc
+        Tp'1 = 4ta + n*(ta + tc + 3to) + 3tc
+        Tp'2 = 8ta + n*(ta + tc + 3to) + tc + to
+        Tu'1 = (Tm + Tp'1) / 2
+        Tu'1 = (6ta + n*(2ta + 6to + 2tc) + 5tc) / 2
+        Tu'2 = (10ta + n*(2ta + 6to + 2tc) + 3tc + to) / 2
+    */
 
     void Nuevo() {
         txtIdPais.setText(" ");
         txtPais.setText(" ");
     }
 
-    boolean validar() {
-        boolean result = false;
+    boolean validar() { 
+        boolean result = false; /*1  ta*/
         try {
-            String sql = "Select * from ciudadPais WHERE IdPais= " + txtIdPais.getText();
-            conect = db.getConnection();
-            st = conect.createStatement();
-            rs = st.executeQuery(sql);
+            String sql = "Select * from ciudadPais WHERE IdPais= " + txtIdPais.getText(); /*2 ta*/
+            conect = db.getConnection(); /*3 ta*/
+            st = conect.createStatement(); /*4 ta*/
+            rs = st.executeQuery(sql); /*5 ta*/
 
-            if (rs.next()) {
-                result = true;
-            } else {
-                result = false;
-            }
+            result = rs.next(); /*6 ta*/
         } catch (SQLException E) {
 
         }
         return result;
     }
+    
+     /* COSTO DE ALGORITMO DEL METODO VALIDAR
+        T = 6ta
+    */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnAgregar;
     private javax.swing.JLabel btnNuevo;
