@@ -396,102 +396,127 @@ public class Temporada extends javax.swing.JFrame {
     private void panelBtnVolverMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelBtnVolverMouseClicked
 
     }//GEN-LAST:event_panelBtnVolverMouseClicked
-
-    void consulta() {
-        String sql = "Select * from temporada";
+void consulta() {
+        String sql = "Select * from temporada"; /*1 ta*/
         try {
-            conect = db.getConnection();
-            st = conect.createStatement();
-            rs = st.executeQuery(sql);
-            Object[] temporada = new Object[3];
-            modelo = (DefaultTableModel) tablaTemporada.getModel();
-            while (rs.next()) {
-                temporada[0] = rs.getInt("IdTemporada");
-                temporada[1] = rs.getInt("Incremento");
-                temporada[2] = rs.getString("Descripcion");
+            conect = db.getConnection(); /*2 ta*/
+            st = conect.createStatement(); /*3 ta*/
+            rs = st.executeQuery(sql); /*4 ta*/
+            Object[] temporada = new Object[3]; /*5 ta*/
+            modelo = (DefaultTableModel) tablaTemporada.getModel(); /*6 ta*/
+            while (rs.next()) { /*7 ntc + tc */
+                temporada[0] = rs.getInt("IdTemporada"); /*8 nta */
+                temporada[1] = rs.getInt("Incremento"); /*9 nta */
+                temporada[2] = rs.getString("Descripcion"); /*10 nta */
 
-                modelo.addRow(temporada);
+                modelo.addRow(temporada); /*11 nta */
             }
-            tablaTemporada.setModel(modelo);
+            tablaTemporada.setModel(modelo); /*12 ta */
         } catch (Exception e) {
 
         }
     }
-
+    
+     /* COSTO DE ALGORITMO DEL METODO CONSULTA
+        Tm = 6ta + n*(tc) + tc
+        Tp = 6ta + n*(tc + 4ta) + tc
+        Tu = (Tm + Tp) / 2
+        Tu = (12ta + n(2tc + 4ta) + 2) /2
+    */
+    
     void Agregar() {
 
-        String incremento = txtImpuesto.getText();
-        String descrip = txtDescripcion.getText();
+        String incremento = txtImpuesto.getText(); /*1  ta*/
+        String descrip = txtDescripcion.getText(); /*2  ta*/
         try {
-            if (incremento.equals(" ") || descrip.equals(" ")) {
+            if (incremento.equals(" ") || descrip.equals(" ")) { /*3  tc*/
                 JOptionPane.showMessageDialog(null, "No se han rellenado todos los campos");
-                limpiarTabla();
+                limpiarTabla(); /*4 n(ta + tc + 3to) + tc*/
             } else {
 
-                String sql = "insert into temporada(Incremento,Descripcion) values ('" + incremento + "','" + descrip + "')";
-                conect = db.getConnection();
-                st = conect.createStatement();
-                st.executeUpdate(sql);
+                String sql = "insert into temporada(Incremento,Descripcion) values ('" + incremento + "','" + descrip + "')"; /*5  ta*/
+                conect = db.getConnection(); /*6  ta*/
+                st = conect.createStatement(); /*7  ta*/
+                st.executeUpdate(sql); /*8  ta*/
 
                 JOptionPane.showMessageDialog(null, "Temporada ingresada con exito");
-                limpiarTabla();
+                limpiarTabla(); /*9 n(ta + tc + 3to) + tc*/
             }
         } catch (Exception e) {
         }
     }
+    
+     /* COSTO DE ALGORITMO DEL METODO AGREGAR
+        Tm = 2ta + n*(ta + tc + 3to) + 2tc
+        Tp = 6ta + n*(ta + tc + 3to) + 2tc
+        Tu = (Tm + Tp) / 2
+        Tu = (8ta + n*(2ta + 2tc + 6to) + 4tc) / 2
+    */
 
     void limpiarTabla() {
-        for (int i = 0; i <= tablaTemporada.getRowCount(); i++) {
-            modelo.removeRow(i);
-            i = (i - 1);
+        for (int i = 0; i <= tablaTemporada.getRowCount(); i++) { /*1  n(ta + tc + to) + tc*/
+            modelo.removeRow(i); /*2  nto*/
+            i = (i - 1); /*3  nto*/
         }
     }
-
+    
+    /* COSTO DE ALGORITMO DEL METODO limpiarTabla
+        T = n*(ta + tc + 3to) + tc
+    */
+    
     void Modificar() {
-        String idTemporada = txtICodigo.getText();
-        String incremento = txtImpuesto.getText();
-        String descrip = txtDescripcion.getText();
+        String idTemporada = txtICodigo.getText(); /*1  ta*/
+        String incremento = txtImpuesto.getText(); /*2  ta*/
+        String descrip = txtDescripcion.getText(); /*3  ta*/
         try {
-            if (idTemporada.equals(" ") || incremento.equals(" ") || descrip.equals(" ")) {
+            if (idTemporada.equals(" ") || incremento.equals(" ") || descrip.equals(" ")) { /*3  tc*/
                 JOptionPane.showMessageDialog(null, "No se han rellenado todos los campos");
-                limpiarTabla();
+                limpiarTabla(); /*5 n(ta + tc + 3to) + tc */
             } else {
 
-                String sql = "Update temporada set Incremento  ='" + incremento + "', Descripcion ='" + descrip + "' WHERE IdTemporada=" + idTemporada;
-                conect = db.getConnection();
-                st = conect.createStatement();
-                st.executeUpdate(sql);
+                String sql = "Update temporada set Incremento  ='" + incremento + "', Descripcion ='" + descrip + "' WHERE IdTemporada=" + idTemporada;  /*6  ta/
+                conect = db.getConnection();  /*7  ta*/
+                st = conect.createStatement(); /*8  ta*/
+                st.executeUpdate(sql); /*9  ta*/
 
                 JOptionPane.showMessageDialog(null, "Temporada modificada con exito");
-                limpiarTabla();
+                limpiarTabla();  /*10 n(ta + tc + 3to) + tc */
 
             }
         } catch (Exception e) {
             System.out.println(e);
         }
     }
+    
+     /* COSTO DE ALGORITMO DEL METODO MODIFICAR
+        Tm = 3ta + n*(ta + tc + 3to) + 2tc
+        Tp = 8ta + n*(ta + tc + 3to) + 2tc
+        Tu = (Tm + Tp) / 2
+        Tu = (11ta + n*(2ta + 2tc + 6to) + 4tc) / 2
+    */
 
     void Eliminar() {
-        String idTemporada = txtICodigo.getText();
-        int fila = tablaTemporada.getSelectedRow();
+        String idTemporada = txtICodigo.getText(); /*1  ta*/
+        int fila = tablaTemporada.getSelectedRow(); /*2  ta*/
         try {
-            if (fila < 0) {
+            if (fila < 0) { /*3  tc*/
                 JOptionPane.showMessageDialog(null, "Temporada no seleccionada");
+                limpiarTabla(); /*4 n(ta + tc + 3to) + tc*/
             } else {
-                CallableStatement csmt = conect.prepareCall("{CALL  reset_autoincrement_Temporada()}");
-                int n = JOptionPane.showConfirmDialog(null, "Desea eliminar la categoria", "Categoria", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if (n == JOptionPane.YES_NO_OPTION) {
-                    if(validar()){
+                CallableStatement csmt = conect.prepareCall("{CALL  reset_autoincrement_Temporada()}"); /*5 ta */
+                int n = JOptionPane.showConfirmDialog(null, "Desea eliminar la categoria", "Categoria", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE); /*6  ta*/
+                if (n == JOptionPane.YES_NO_OPTION) {  /*7 tc*/
+                    if(validar()){ /*8 tc*/
                          JOptionPane.showMessageDialog(null, "No puede eliminar este dato ya que esta referenciado en otra tabla");
-                        limpiarTabla();
+                        limpiarTabla(); /*9  n(ta + tc + 3to) + tc*/
                     }else{
-                        String sql = "Delete from temporada where IdTemporada= " + idTemporada;
-                    conect = db.getConnection();
-                    st = conect.createStatement();
-                    st.executeUpdate(sql);
-                    csmt.execute();
+                        String sql = "Delete from temporada where IdTemporada= " + idTemporada; /*10 ta*/
+                    conect = db.getConnection(); /*11 ta*/
+                    st = conect.createStatement();  /*12 ta*/
+                    st.executeUpdate(sql); /*13 ta*/
+                    csmt.execute(); /*14 to*/
                     JOptionPane.showMessageDialog(null, "Temporada eliminada");
-                    limpiarTabla();
+                    limpiarTabla(); /*15  n(ta + tc + 3to) + tc*/
                     }
                     
                 }
@@ -500,6 +525,15 @@ public class Temporada extends javax.swing.JFrame {
 
         }
     }
+    
+     /* COSTO DE ALGORITMO DEL METODO ELIMINAR
+        Tm = 2ta + n*(ta + 3to + tc) + 2tc
+        Tp'1 = 4ta + n*(ta + tc + 3to) + 3tc
+        Tp'2 = 8ta + n*(ta + tc + 3to) + tc + to
+        Tu'1 = (Tm + Tp'1) / 2
+        Tu'1 = (6ta + n*(2ta + 6to + 2tc) + 5tc) / 2
+        Tu'2 = (10ta + n*(2ta + 6to + 2tc) + 3tc + to) / 2
+    */
 
     void Nuevo() {
         txtICodigo.setText(" ");
@@ -507,18 +541,14 @@ public class Temporada extends javax.swing.JFrame {
         txtDescripcion.setText(" ");
     }
      boolean validar() {
-        boolean result = false;
+        boolean result = false; /*1  ta*/
         try {
             String sql = "Select * from HotelTemporada WHERE IdTemporada= " + txtICodigo.getText();
-            conect = db.getConnection();
-            st = conect.createStatement();
-            rs = st.executeQuery(sql);
+            conect = db.getConnection(); /*3 ta*/
+            st = conect.createStatement(); /*4 ta*/
+            rs = st.executeQuery(sql); /*5 ta*/
 
-            if (rs.next()) {
-                result = true;
-            } else {
-                result = false;
-            }
+            result = rs.next(); /*6 ta*/
         } catch (SQLException E) {
             
         }
